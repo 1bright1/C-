@@ -1,0 +1,102 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <stdio.h>
+#define N 10
+using namespace std;
+
+class stack //Implement the data structure here
+{
+    int top;
+    int idArray[N]; // Array for ids
+public:
+    stack ()
+    {
+        top = 0; // top most value
+    }
+    //int idArray[numberOfHROperations];
+    void push (int data) // adds element to the stack
+    {
+        if (top == N) // if top is equal to the max size of array go to next line
+        {
+            printf("List too full \n"); // output
+        }
+        else
+        {
+            idArray[top] = data; // store data inside array
+            top ++; // increment top
+        }
+    }
+    int pop () // removes element from stack
+    {
+        if (top == 0) // if stack us empty go to next line
+        {
+            printf("List is empty \n"); //output
+        }
+        else
+        {
+            top --; // keep removing element by an increment of 1
+        }
+        return idArray[top]; // return values
+    }
+    int checkTop () // checks the top most element
+    {
+        if (top == 0) 
+        {
+            printf("There are no element in the stack\n"); // output
+        }
+        else
+        {
+            return idArray[top-1];
+        }
+    }
+   
+};
+
+int main(int argc, const char * argv[]) {
+    
+    stack s; // declear class into the main code
+    int numberOfHROperations; // numbe of HR Operations
+    vector<char>operations; //makes vectors for operation
+    vector<int>ids; // makes vectors for id
+
+    printf("Enter the number of HR operations:\n");//Ask for the number of HR operations and read
+    scanf("%d", &numberOfHROperations);
+    
+    printf("Input the operations and IDs:\n");//Ask for the operations and IDs
+    
+    //Read the operations and IDs from stdin
+
+    for (int i = 0; i < numberOfHROperations; i++){
+        char operation;
+        int id;
+        scanf(" %c%d", &operation, &id);
+        operations.push_back(operation);
+        ids.push_back(id);
+    } 
+
+    for (int j=0; j < numberOfHROperations; j++)
+    {
+        if (operations[j] == '+') // if the vector for operation at agiven index is + go to next line
+        {
+           s.push(ids[j]); // add element to stack
+        }
+        else
+        {
+            int popped_value; // variable to store the ids
+            popped_value = ids[j];
+            s.checkTop(); // calls the function checkTop from class
+            if (popped_value != s.checkTop()) // if popped_value is not equal to the top most value (The least experienced) go to next line
+            {
+                printf("FAIL\n"); // ouput
+                return 0; // break out of code
+            }
+            else
+            {
+                s.pop(); // remove element
+            }
+        }
+    }
+    printf("PASS\n"); // output 
+    return 0;
+}

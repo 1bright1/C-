@@ -1,0 +1,58 @@
+#include <stdio.h>
+#include <iostream>
+#include <string>
+
+int main()
+{
+    float rock_weight; // weight of rock
+    int numOfdepth; // number of depths
+    float firstDepth_value; // first depth value
+    int depth_increment; // depth's increments
+    int numOf_k; // number of k values
+    int k_increment;
+    float firstk_value; // first k value
+    printf("Input rock unit weight (kN/m3):\n"); //output
+    scanf("%f", &rock_weight); // input
+    printf("Input number of depth values:\n");
+    scanf("%d", &numOfdepth);
+    printf("Input first depth value (m):\n");
+    scanf("%f", &firstDepth_value);
+    printf("Input depth increment (m):\n");
+    scanf("%d", &depth_increment);
+    printf("Input number of k values:\n");
+    scanf("%d", &numOf_k);
+    printf("Input first k value (m):\n");
+    scanf("%f", &firstk_value);
+    printf("Input k increment (m):\n");
+    scanf("%d", &k_increment);
+    float b = firstDepth_value; // stored first depth value into another variable
+    float vert_stress; // vertical stress
+    printf("Vertical stress values (kPa):\n");
+    for(int j = 0; j < numOfdepth; j++)
+    {
+        vert_stress = rock_weight * firstDepth_value; // formula to calculate stree
+        printf("%.0f\n", vert_stress); // output
+        firstDepth_value += depth_increment; // increase value
+    }
+
+    FILE* fileOutput = fopen("outputFileA.txt", "w"); // write a file named outputFileA
+    float horizontal_stress; // horizontal stress
+    float c = firstk_value; // stored first k value into another variable
+    for(int i = 0; i < numOfdepth; i++)
+    {
+        fprintf(fileOutput, "%.0f,", b); // output to file
+        for(int j = 0; j < numOf_k; j++)
+        {
+            horizontal_stress = rock_weight * b * firstk_value; // formula to calculate horizontal stress
+            if (j < (numOf_k - 1))
+                fprintf(fileOutput, "%.0f,", horizontal_stress);
+            else
+                fprintf(fileOutput, "%.0f\n", horizontal_stress);
+            firstk_value += k_increment; // increase value
+        }
+        firstk_value = c;
+        b += depth_increment;
+    }
+    fclose(fileOutput); // close
+       
+}

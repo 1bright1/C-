@@ -1,0 +1,79 @@
+% %MNTC313 A12 starter code
+% %User input statements have been provided to acquire the % payload in the
+% %bucket, the incline angle and the friction coefficient
+% %These statements have been formatted for AutoGradr - please do not alter
+% %them.
+% 
+% %If you run the program in MATLAB, you will be able to input values in the
+% %command window
+% 
+
+clear all
+clc
+
+height = input('Enter controlled-descent height (m):');
+fprintf('\n');
+rho = input('Enter fluid density (kg/m^3):');
+fprintf('\n');
+
+N = 3; % for the for loop 
+mass = 15600; 
+c = 1; % drag coeff
+diameter = 3.7;
+rad = diameter/2; %radius
+g = 9.8; %gravity
+area = pi*(rad^2);
+dt = 1; % first time step
+force = 174850; %applied force due to the stage press
+
+for k=1:1:N
+    velocity = -1500;
+    velocity = velocity/3.6; %conversion
+    h = 10000; % max height
+    t = k*dt; % time
+    acceleration = 0;
+    newtime = 0; % time for when acceleration changes due to the applied force
+    idx = 1; %index
+    while h >= 0
+        t = (idx - 1)*dt;
+        
+        if h <= height
+            if newtime <= 60
+                newtime = newtime + dt; %calculation to keep track of time
+                fdrag = (-1/2)*c*rho*area*(velocity^2); %calculation for the drag force
+                acceleration = g - (force/mass) - (fdrag/mass*sign(velocity)); % calculation for acceleration
+                h = h + velocity*dt; % calculation for new height
+                velocity = velocity - acceleration*dt; % calculation for new velocity
+            else
+                fdrag = (-1/2)*c*rho*area*(velocity^2);
+                acceleration = g - (fdrag/(mass*sign(velocity)));
+                h = h + velocity*dt;
+                velocity = velocity - acceleration*dt; 
+            end
+        else
+            fdrag = (-1/2)*rho*area*(velocity^2);
+            acceleration = g - (fdrag/(mass*sign(velocity)));
+            h = h + velocity*dt;
+            velocity = velocity - acceleration*dt; 
+        end
+        
+        a_out(idx,k) = acceleration; % stores the acceleration
+        h_out(idx,k) = h;
+        v_out(idx,k) = velocity;
+        t_out(idx,k) = t;
+        idx = idx + 1; %incrment index
+    end
+    totTime = t_out(end,k); % total time
+    position = h_out(end,k); % position
+    
+    fprintf('dt = %.2f s, Total time = %.0f s, Position = %.0f m\n',dt,totTime,position); % output
+    dt = dt/10; % change dt
+end
+
+v_final = -3.6*v_out(end,end); % calculation for the landing speed
+fprintf('landing speed: %.0f km/h\n',v_final); %output
+if v_final <= 10 % if landing speed is less than or equal to 10 go to next line
+    fprintf('Successful landing\n'); %output
+else
+    fprintf('Non-successful landing\n');
+end

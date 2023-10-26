@@ -1,0 +1,100 @@
+#include <stdio.h>
+#include <iostream>
+#include <string>
+
+struct comp_payLoad // structure to define company's payload for given center
+{
+    int customers;
+    float avgPrice_perItem;
+    float avgWeight_perItem;
+};
+
+class economics // class to calculate total customers, weight, revenue and avergage revenue
+{
+    public:
+        float transport_price = 4.70; // transportation price per kg
+        float target_avg_revenue = 36000; // target revenue per center
+        int c = 0; // counter
+        int total_customers (int b) // method to calculate total customers in all centers
+        {
+            c += b;
+            return c;
+        }
+        float mass =0; // counter for weight
+        float total_weight (float weight, int Thecustomers) // method to calculate total weight
+        {
+            weight *= Thecustomers;
+            mass += weight;
+            return mass;
+        }
+        float price;
+        float p =0; // counter for price
+        float w = 0; // counter for weight
+        float true_revenue; // total revenue
+        float total_revenue (float avg_price, int realCustomers, float theWeight) // method to calculate total revenue
+        {
+            theWeight *= realCustomers;
+            price = realCustomers * avg_price;
+            p += price;
+            w += theWeight;
+            true_revenue = p - (transport_price * w);
+            return true_revenue;
+        }
+        float avg; //average for the reveunue 
+        float average_revenue (float revenue, int theCenters) // methods calculates average revenue
+        {
+           avg = revenue/theCenters;
+           return avg;
+        }
+};
+
+int main()
+{
+    comp_payLoad payload; // decleared structure into main code
+    economics economy; // decleared class into main code
+    int centers;
+    printf("Input number of centers:\n"); // output
+    scanf("%d", &centers); // input
+    int tot_customer; // total customer
+    printf("Input customer data for all centers:\n");
+    int list_customers[centers]; // array for the list of customers
+    for (int i=0; i< centers; i++) 
+    {
+        scanf("%d", &payload.customers);
+        list_customers[i] = payload.customers;
+        tot_customer = economy.total_customers(payload.customers); // calls the method total_customers from the class made above
+    }
+    printf("Input item average price data for all centers:\n");
+    float price_list[centers]; // array for the average prices
+    for (int i=0; i< centers; i++)
+    {
+        scanf("%f", &payload.avgPrice_perItem);
+        price_list[i]= payload.avgPrice_perItem;
+    }
+    
+    float tot_weight; // total weight
+    float weight_list[centers]; // array for the average weight per center
+    printf("Input item average weight data for all centers:\n");
+    for (int i=0; i< centers; i++)
+    {
+        scanf("%f", &payload.avgWeight_perItem);
+        weight_list[i]= payload.avgWeight_perItem;
+        tot_weight = economy.total_weight(payload.avgWeight_perItem, list_customers[i]); // calls the method total_weight from class
+    }
+    float tot_revenue; // total revenue
+    for (int i =0; i<centers; i++)
+    {
+        tot_revenue = economy.total_revenue(price_list[i], list_customers[i], weight_list[i]); // calls the method total_revenue from the class
+    }
+    float avg_revenue; // average revenue
+    avg_revenue = economy.average_revenue(tot_revenue, centers); // calls the method average_revenue from the class
+    
+    printf("Total customers: %d\n", tot_customer); // outputs
+    printf("Total weight: %.0f kg\n", tot_weight);
+    printf("Total revenue: $%.0f\n", tot_revenue);
+    printf("Average revenue: $%.0f\n", avg_revenue);
+    if (avg_revenue >= economy.target_avg_revenue) // if average revenue is greater or equal to the target average revenue per center output next line
+        printf("Company is profitable\n");
+    else
+        printf("Company is not profitable\n");
+}

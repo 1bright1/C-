@@ -1,0 +1,76 @@
+sampleData = dlmread('goldDataA.txt','\t'); %read file
+array1 = sampleData; % store data into an array
+% i = 1;
+fprintf("ID, Gold Mass [g], Sulfur Mass [Kg], Arsenic Mass [Kg], Cutoff conditions? (Y/N)\n"); %output
+ 
+% id = array1(i,1);
+% length = array1(i,2);
+% radius = array1(i,3);
+% density = array1(i,4);
+% gold = array1(i,5);
+% sulfur = array1(i,6);
+% arsenic = array1(i,7);
+% area = pi*(radius^2);
+% goldMass = gold*density*area*length;
+% sulfurMass = sulfur*density*area*length;
+% arsenicMass = arsenic*density*area*length;
+
+for i=1:1:10 % make array for the IDs
+    id = array1(i,1);
+    idArray(i) = id;
+end
+
+for i=1:1:10 % make array for the mass of gold
+    length = array1(i,2);
+    radius = array1(i,3);
+    density = array1(i,4);
+    area = pi*(radius^2);
+    gold = array1(i,5);
+    goldMass = gold*density*area*length; %formula for gold Mass
+    goldArray(i) = goldMass;
+end
+
+for i=1:1:10 % make array for the mass of sulfur
+    length = array1(i,2);
+    radius = array1(i,3);
+    density = array1(i,4);
+    sulfur = array1(i,6);
+    area = pi*(radius^2);
+    sulfurMass = sulfur*density*area*length; % formula for sulfur mass
+    sulfurArray(i) = sulfurMass;
+end
+
+for i=1:1:10 % make array for the mass of arsenic
+    length = array1(i,2);
+    radius = array1(i,3);
+    density = array1(i,4);
+    arsenic = array1(i,7);
+    area = pi*(radius^2);
+    arsenicMass = arsenic*density*area*length; % formula for arsenic mass
+    arsenicArray(i) = arsenicMass;
+end
+
+for i=1:1:10 % make array for the conditions
+    gold = array1(i,5);
+    sulfur = array1(i,6);
+    arsenic = array1(i,7);
+    if gold < 1 || sulfur > 5 || arsenic > 1
+        condition(i) = 'N';
+    else
+        condition(i) = 'Y';
+    end
+end
+    
+[sort_goldArray, idx_sort] = sort(goldArray, 'descend'); % sort from highest to lowest mass
+idArray = idArray(idx_sort); % sort the array accourding to the index 
+sulfurArray = sulfurArray(idx_sort);
+arsenicArray = arsenicArray(idx_sort);
+condition = condition(idx_sort);
+
+for i=1:1:10 % ouput
+     fprintf('%d, %.2f, %.2f, %.2f, %c\n',idArray(i),sort_goldArray(i),sulfurArray(i),arsenicArray(i),condition(i));
+end
+
+maxgoldMass = max(goldArray); % highest gold mass
+idArray = find(goldArray == maxgoldMass); %find the ID that has the max mass for gold 
+fprintf('Max mass: %.2f g at ID %d\n',maxgoldMass,idArray); %output

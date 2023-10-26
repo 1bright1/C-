@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <string>
+#include <iostream>
+
+int stressTest (int modulus, int s); //function to calculate stress and to output weather the bridge deck is susceptible to failure
+int main()
+{
+    float elasticMod, strain; // elastic modulus and the strain
+	
+    scanf("%f, %f", &elasticMod, &strain);
+    //In the console, enter elastic modulus (MPa) and strain values on a single line separated by a comma and space. 
+    int stress;
+    stress = stressTest (elasticMod, strain); // calls the function
+}
+int stressTest (int modulus, int s) //function definition
+{
+    float theStress; 
+    theStress = modulus * s ; //formula to calculate stress
+    printf("Stress value: %.2f MPa\n", theStress); //output stress value
+    if (theStress > 0) // if the strain gague output is negaitve 
+    {
+        printf("Bridge deck in tension\n");
+        if (theStress > 5) // if the stress output is greater then the max tensile strength
+        {
+            printf("Danger: tensile strength exceeded\n");
+        }
+        else
+            printf("Bridge deck safe\n");
+    }
+    else if (theStress < 0) // if the strain gague output is positive
+    {
+        printf("Bridge deck in compression\n");
+        if (theStress < -30) // if the abosulute vaule of the stress ouput is greater than the absolute value of the max compression strength
+        {
+            printf("Danger: compressive strength exceeded\n");
+        }
+        else
+            printf("Bridge deck safe\n");
+    }
+    else if (s == 0) // if strain gague output is 0 
+        printf("No stress in bridge\n");
+}

@@ -1,0 +1,58 @@
+% %MNTC313 A12 starter code
+% %User input statements have been provided to acquire the % payload in the
+% %bucket, the incline angle and the friction coefficient
+% %These statements have been formatted for AutoGradr - please do not alter
+% %them.
+% 
+% %If you run the program in MATLAB, you will be able to input values in the
+% %command window
+% 
+height = input('Enter controlled-descent height (m):');
+fprintf('\n');
+rho = input('Enter fluid density (kg/m^3):');
+fprintf('\n');
+
+N = 3;
+mass = 15600000;
+c = 1;
+diameter = 3.7;
+rad = diameter/2;
+g = 9.8;
+area = pi*(rad^2);
+dt = 1;
+force = 174850;
+
+for k=1:1:N
+    velocity = 1500;
+    velocity = velocity*1000*(1/3600);
+    h = 10000;
+    t = k*dt;
+    time = 0;
+    acceleration = 0;
+    while h > height
+        myfunc = @(t) velocity.*t + (1/2).*9.8.*t.^2;
+        t = fzero(myfunc,0);
+        h = h - velocity*dt + (1/2)*g*(dt^2);
+        velocity = velocity - g*dt;
+        time = time+t;     
+%     fprintf('dt = %.2f s, Total time = %.0f s, Position = %.0f m\n',dt,time,h);   
+    end
+
+    if h == height
+        fdrag = (-1/2)*c*rho*area*(velocity^2);
+        acceleration = g - (force/mass) - (fdrag/mass);
+        h = h - velocity*60 + (1/2)*acceleration*(60^2);
+        velocity = velocity - acceleration*dt;
+        time = time + 60;
+    end
+     
+    while h > 0 && h < height
+        myfunc = @(t) velocity.*t + (1/2).*9.8.*t.^2;
+        t2 = fzero(myfunc,0);
+        h = h - velocity*dt + (1/2)*g*(dt^2);
+        velocity = velocity - g*dt;
+        time = time + t2;
+    end
+    fprintf('dt = %.2f s, Total time = %.0f s, Position = %.0f m\n',dt,t,h);
+    dt = dt/10;
+end

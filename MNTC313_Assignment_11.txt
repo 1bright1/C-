@@ -1,0 +1,39 @@
+%%MNTC313 A11 Starter Code%%
+
+%%Please DO NOT change the user input format
+%%It has been formatted to work properly with the Octave Engine
+
+clc
+
+a = input('Enter a:');
+fprintf('\n');
+b = input('Enter b:');
+fprintf('\n');
+
+f = @(x) 1.8.^(0.045.*x)-1;
+
+exact_value = quadgk(f,a,b);
+fprintf('True value: %.0f N\n',exact_value);
+N = 10; % initialize N as 10
+
+for (i=1:1:5) % loop for the different N values
+    z_set = linspace(a,b,N); % Makes an array of N values between the given limits
+%     f_set = 1.8.^(0.045.*z_set)-1;
+    f_set = f(z_set); % calculates the function at z_set
+    dz = (b - a)/N ; % formula for rectangle width
+    numeric_value = sum(f_set*dz); % evaluates the integral numerically
+    percent_error = abs((numeric_value - exact_value)/exact_value)*100; % formula for percent error
+    fprintf('N = %d, F = %.0f N, Error %% = %.2f\n',N,numeric_value,percent_error); % ouput
+    N = N*10; % increase N by a multiple of 10
+end
+
+N = 10000;% initialize N to be 10000
+a = 450; % lower limit
+b = 500; % upper limit
+% evaluating the integral numericaly with the new limits
+z_set = linspace(a,b,N);
+f_set = f(z_set);
+dz = (b - a)/N ;
+force = sum(f_set*dz);
+pressure = force/(50*50)/1000; % formula for pressure
+fprintf('Average pressure between 450 and 500 m: %.1f kPa\n',pressure); % ouput
